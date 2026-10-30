@@ -1,0 +1,130 @@
+{
+  "name": "codesnap-rs-local",
+  "displayName": "CodeSnap RS (Local Adapter)",
+  "description": "Live code screenshot preview with the bundled official CodeSnap Rust renderer.",
+  "version": "0.2.0",
+  "publisher": "local-tools",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./extension.js",
+  "extensionKind": [
+    "ui"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    }
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "codesnap.start",
+        "title": "CodeSnap 📸"
+      },
+      {
+        "command": "codesnap-rs.save",
+        "title": "CodeSnap RS: Save Selection as PNG"
+      },
+      {
+        "command": "codesnap-rs.copy",
+        "title": "CodeSnap RS: Copy Selection as Image"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "codesnap.start",
+          "when": "editorHasSelection",
+          "group": "codesnap@1"
+        },
+        {
+          "command": "codesnap-rs.copy",
+          "when": "editorHasSelection",
+          "group": "codesnap@2"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "CodeSnap RS",
+      "properties": {
+        "codesnap-rs.scaleFactor": {
+          "type": "integer",
+          "default": 2,
+          "minimum": 1,
+          "maximum": 3,
+          "description": "Export scale. Use 1 for the fastest export, 2 for sharp images, or 3 for maximum resolution.",
+          "scope": "window"
+        },
+        "codesnap-rs.theme": {
+          "type": "string",
+          "default": "candy",
+          "description": "Rust renderer syntax theme (built-in candy by default). The editor theme is not automatically imported.",
+          "scope": "window"
+        },
+        "codesnap.backgroundColor": {
+          "type": "string",
+          "default": "#abb8c3",
+          "description": "Screenshot background color.",
+          "scope": "window"
+        },
+        "codesnap.showLineNumbers": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show line numbers.",
+          "scope": "window"
+        },
+        "codesnap.realLineNumbers": {
+          "type": "boolean",
+          "default": false,
+          "description": "Start numbering at the selected source line.",
+          "scope": "window"
+        },
+        "codesnap.showWindowControls": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show window controls.",
+          "scope": "window"
+        },
+        "codesnap.showWindowTitle": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show the source filename.",
+          "scope": "window"
+        },
+        "codesnap.transparentBackground": {
+          "type": "boolean",
+          "default": false,
+          "description": "Export with a transparent outer background.",
+          "scope": "window"
+        },
+        "codesnap.shutterAction": {
+          "type": "string",
+          "enum": [
+            "save",
+            "copy"
+          ],
+          "default": "save",
+          "description": "Action for the preview's shutter button.",
+          "scope": "window"
+        }
+      }
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anupheap/codesnap-rs-vscode.git"
+  },
+  "homepage": "https://github.com/anupheap/codesnap-rs-vscode#readme",
+  "bugs": {
+    "url": "https://github.com/anupheap/codesnap-rs-vscode/issues"
+  },
+  "scripts": {
+    "test": "node --test test/adapter.test.js test/preview.test.js",
+    "package": "python scripts/package.py"
+  }
+}

@@ -1,0 +1,9 @@
+bin/
+dist/
+.build/
+node_modules/
+__pycache__/
+*.log
+*.vsix
+.DS_Store
+Thumbs.db
