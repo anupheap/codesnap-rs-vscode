@@ -1,0 +1,20 @@
+{
+  "version": "0.14.0",
+  "targets": {
+    "win32-x64": {
+      "asset": "codesnap-cli_v0.14.0_x86_64-pc-windows-msvc.zip",
+      "sha256": "bc0f031c96cfc7512e1f56f7db31c36fa14461816445b69e43b914b3302fd8c7",
+      "filename": "codesnap.exe"
+    },
+    "linux-x64": {
+      "asset": "codesnap-cli_v0.14.0_x86_64-unknown-linux-gnu.tar.gz",
+      "sha256": "4d0d4cd6762eaeff24116e7ff182aab8dfe926084eb176f4cfcbb65b25a7cd28",
+      "filename": "codesnap"
+    },
+    "linux-arm64": {
+      "asset": "codesnap-cli_v0.14.0_aarch64-unknown-linux-gnu.tar.gz",
+      "sha256": "2bac53b7fabf74ddafd992dd07f0d53cd9febafcbfc10ec47eb6a74405322fbd",
+      "filename": "codesnap"
+    }
+  }
+}

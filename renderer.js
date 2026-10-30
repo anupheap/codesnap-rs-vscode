@@ -2,6 +2,8 @@
 
 const path = require('node:path');
 const { execFile } = require('node:child_process');
+const fs = require('node:fs');
+const { copyPng } = require('./clipboard');
 const PNG_SIGNATURE = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
 
 function normalizeCode(text, tabSize = 4) {
@@ -27,7 +29,22 @@ function validatePng(data) {
   return { width: data.readUInt32BE(16), height: data.readUInt32BE(20) };
 }
 
-function render(extensionPath, request, token) {
+function executablePath(extensionPath, platform = process.platform) {
+  if (!['win32', 'linux'].includes(platform)) throw new Error('This extension currently supports Windows and Linux.');
+  return path.join(extensionPath, 'bin', platform === 'win32' ? 'codesnap.exe' : 'codesnap');
+}
+
+async function render(extensionPath, request, token) {
+  if (request.copy && process.platform === 'linux') {
+    const png = await render(extensionPath, { ...request, copy: false }, token);
+    if (png === null) return null;
+    return copyPng(png, token);
+  }
+  const executable = executablePath(extensionPath);
+  if (process.platform === 'linux') {
+    try { fs.accessSync(executable, fs.constants.X_OK); }
+    catch { fs.chmodSync(executable, 0o755); }
+  }
   const args = [
     '--config', path.join(extensionPath, 'config.json'),
     '--from-code', '-', '--file-path', request.filename,
@@ -42,7 +59,7 @@ function render(extensionPath, request, token) {
   return new Promise((resolve, reject) => {
     let cancellation;
     let inputError;
-    const child = execFile(path.join(extensionPath, 'bin', 'codesnap.exe'), args, {
+    const child = execFile(executable, args, {
       encoding: 'buffer', windowsHide: true, shell: false, timeout: 45000,
       maxBuffer: 64 * 1024 * 1024, cwd: extensionPath
     }, (error, stdout, stderr) => {
@@ -67,4 +84,4 @@ function render(extensionPath, request, token) {
   });
 }
 
-module.exports = { normalizeCode, validatePng, render };
+module.exports = { normalizeCode, validatePng, render, executablePath };

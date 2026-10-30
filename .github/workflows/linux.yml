@@ -1,0 +1,40 @@
+name: Linux checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            target: linux-x64
+          - runner: ubuntu-24.04-arm
+            target: linux-arm64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - name: Prepare verified renderer
+        run: python3 scripts/prepare-native.py --target ${{ matrix.target }}
+      - name: Check native libraries
+        run: ldd bin/codesnap
+      - name: Run adapter and native rendering tests
+        run: npm test
+      - name: Prepare isolated X11 clipboard test
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq xclip xvfb
+      - name: Check persistent PNG clipboard ownership
+        run: xvfb-run --auto-servernum node test/x11-roundtrip.js
+      - name: Build platform VSIX
+        run: python3 scripts/package.py --target ${{ matrix.target }}

@@ -2,7 +2,7 @@
   "name": "codesnap-rs-local",
   "displayName": "CodeSnap RS (Local Adapter)",
   "description": "Live code screenshot preview with the bundled official CodeSnap Rust renderer.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "publisher": "local-tools",
   "license": "MIT",
   "engines": {
@@ -124,7 +124,8 @@
     "url": "https://github.com/anupheap/codesnap-rs-vscode/issues"
   },
   "scripts": {
-    "test": "node --test test/adapter.test.js test/preview.test.js",
+    "test": "node --test test/adapter.test.js test/preview.test.js test/clipboard.test.js",
+    "prepare-native": "python scripts/prepare-native.py",
     "package": "python scripts/package.py"
   }
 }
